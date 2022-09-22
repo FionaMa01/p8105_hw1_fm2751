@@ -1,0 +1,9 @@
+---
+title: "p8105_hw1_fm2751"
+output: html_document
+date: "2022-09-22"
+---
+
+install.packages("palmerpenguins")
+
+
