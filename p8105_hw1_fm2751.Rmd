@@ -11,7 +11,6 @@ See below.
 
 # Problem 1
 First, I install the package "palmerpenguins" in the console and load library for later use.
-
 ```{r}
 library(tidyverse)
 ```
@@ -20,13 +19,15 @@ Second, I load the dataset "penguins".
 ```{r Load}
 data("penguins", package = "palmerpenguins")
 ```
-## Description of the penguins dataset
+
+## Description of the "penguins" dataset
 In this section, you can have a summary about the "penguins" dataset. Also, you can view the first 5 rows of the dataset to get a general idea.
 ```{r Summary}
 summary(penguins)
 head(penguins, 5)
 nrow(penguins)
 ncol(penguins)
+round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)
 ```
 The "penguins" dataset consists of 344 observations and 8 variables (which are species, island, bill length in mm, bill depth in mm, flipper length in mm, body mass in g, sex and year of birth). The "penguins" dataset has `r nrow(penguins)` rows and `r ncol(penguins)` columns. This study collected data from 3 species of penguins (Adelie, Chinstrap, and Gentoo) found on 3 different islands (Biscoe, Dream, and Torgersen). Among all variables, the diversity in penguins' body mass is the greatest, ranging from `r min(penguins$body_mass_g, na.rm = TRUE)`g to `r max(penguins$body_mass_g, na.rm = TRUE)`g. The number of female penguins (165) and male penguins (168) are similar to each other. Penguins has a mean flipper length of `r round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)`mm.
 
@@ -63,25 +64,36 @@ In this section, I will create a data frame comprised of
 * a character vector of length 10;
 * a factor vector of length 10, with 3 different factor “levels”.
 
+## Create the dataframe
 ```{r Dataframe}
+set.seed(1)
+vec_numeric = rnorm(10)
 df = tibble(
-  sample = rnorm(10),
-  vec_logic = sample > 0,
+  vec_numeric,
+  vec_logical = vec_numeric > 0,
   vec_char = c("b", "e", "a", "u", "u", "t", "i", "f", "u", "l"),
   vec_factor = factor(c("Low", "Medium", "High", "Low", "High", "Medium", "High", "Low", "Medium", "High"))
 )
 df
-mean(df$sample)
-mean(df$vec_logic)
+```
+
+## Take the mean of each varible
+```{r mean1}
+mean(df$vec_numeric)
+mean(df$vec_logical)
 mean(df$vec_char)
 mean(df$vec_factor)
 ```
+We could see from the outputs above that:
+"vec_numeric" and "vec_logical" work, but "vec_char" or "vec_factor" does not work!
+This is because variables that are not numeric or logical will not be recognized as numeric arguments, thus return "NA".
 
-```{r, echo=TRUE, results='hide'}
-mean(as.numeric(df$sample))
-mean(as.numeric(df$vec_logic))
+## Take the mean again using as.numeric (output hided)
+```{r mean2, echo=TRUE, results='hide'}
+mean(as.numeric(df$vec_logical))
 mean(as.numeric(df$vec_char))
 mean(as.numeric(df$vec_factor))
 ```
-Explanation:
-
+After converting logical ("vec_logical"), character ("vec_char"), and factor ("vec_factor") variables to numeric variables, we can take the mean of "vec_logical" and "vec_factor", but still does not work for "vec_char"!
+This is because the character strings are neither properly formatted numbers nor ordered levels and hence cannot be converted to the numeric class. 
+It helps explain what happens when I try to take the mean. If a variable is not numeric and cannot be converted to numeric, we cannot take the mean of it and NAs introduced by coercion.
