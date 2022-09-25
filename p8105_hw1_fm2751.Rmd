@@ -3,15 +3,85 @@ title: "p8105_hw1_fm2751"
 output: github_document
 date: "2022-09-22"
 ---
+# Problem 0.1
+Public GitHub repo, local R Project, and .Rmd file created and rendered to github_document.
+
+# Problem 0.2
+See below.
+
+# Problem 1
+First, I install the package "palmerpenguins" in the console and load library for later use.
 
 ```{r}
-install.packages("palmerpenguins")
+library(tidyverse)
 ```
 
-```{r}
+Second, I load the dataset "penguins".
+```{r Load}
 data("penguins", package = "palmerpenguins")
 ```
+## Description of the penguins dataset
+In this section, you can have a summary about the "penguins" dataset. Also, you can view the first 5 rows of the dataset to get a general idea.
+```{r Summary}
+summary(penguins)
+head(penguins, 5)
+nrow(penguins)
+ncol(penguins)
+```
+The "penguins" dataset consists of 344 observations and 8 variables (which are species, island, bill length in mm, bill depth in mm, flipper length in mm, body mass in g, sex and year of birth). The "penguins" dataset has `r nrow(penguins)` rows and `r ncol(penguins)` columns. This study collected data from 3 species of penguins (Adelie, Chinstrap, and Gentoo) found on 3 different islands (Biscoe, Dream, and Torgersen). Among all variables, the diversity in penguins' body mass is the greatest, ranging from `r min(penguins$body_mass_g, na.rm = TRUE)`g to `r max(penguins$body_mass_g, na.rm = TRUE)`g. The number of female penguins (165) and male penguins (168) are similar to each other. Penguins has a mean flipper length of `r round(mean(penguins$flipper_length_mm, na.rm = TRUE), 2)`mm.
 
+## Plots
+In this section, you will see a scatterplot illustrating the association between penguins' flipper length and bill length.
 
+```{r Plot}
+flipper_bill <- ggplot(data = penguins,
+                         aes(x = bill_length_mm,
+                             y = flipper_length_mm)) +
+  geom_point(aes(color = species, 
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  scale_color_manual(values = c("pink","purple","blue")) +
+  labs(title = "Flipper length vs. bill length",
+       x = "Bill length (mm)",
+       y = "Flipper length (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+flipper_bill
+ggsave("flipper_bill.pdf", height = 4, width = 6)
+```
+* NOTE: I have checked that flipper_bill.pdf has been successfully saved in my project directory.
 
+# Problem 2
+In this section, I will create a data frame comprised of
+* a random sample of size 10 from a standard Normal distribution;
+* a logical vector indicating whether elements of the sample are greater than 0;
+* a character vector of length 10;
+* a factor vector of length 10, with 3 different factor “levels”.
+
+```{r Dataframe}
+df = tibble(
+  sample = rnorm(10),
+  vec_logic = sample > 0,
+  vec_char = c("b", "e", "a", "u", "u", "t", "i", "f", "u", "l"),
+  vec_factor = factor(c("Low", "Medium", "High", "Low", "High", "Medium", "High", "Low", "Medium", "High"))
+)
+df
+mean(df$sample)
+mean(df$vec_logic)
+mean(df$vec_char)
+mean(df$vec_factor)
+```
+
+```{r, echo=TRUE, results='hide'}
+mean(as.numeric(df$sample))
+mean(as.numeric(df$vec_logic))
+mean(as.numeric(df$vec_char))
+mean(as.numeric(df$vec_factor))
+```
+Explanation:
 
